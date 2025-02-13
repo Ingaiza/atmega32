@@ -12,7 +12,7 @@ A simple AVR ATMEGA32 program to blink an LED
 
 ## IMPLEMENTATION
 The task has been implemented for the AVR ATMEGA32 microcontroller and written in C++ using the avr libraries.
-In the instructions LED is to be placed on PIN 13 but in the ATMEGA32 PIN 13 is not a general purpose I/O pin hence cannot be used, as for the Button, It was to be placed in PIN 2 but since I'm using Hardware Interrupt , in the ATMEGA32 you are constrained to only 3 pins: INT0(PIN 16), INT1(PIN 17) & , INT2(PIN 3).Hence choosing INT0 .
+In the instructions, LED is to be placed on PIN 13 but in the ATMEGA32 PIN 13 is not a general purpose I/O pin hence cannot be used, as for the Button, It was to be placed in PIN 2 but since I'm using Hardware Interrupt , in the ATMEGA32 you are constrained to only 3 pins: INT0(PIN 16), INT1(PIN 17) & , INT2(PIN 3).Hence choosing INT0.
 
 
 The main function Initialized PORTB PIN B7 (PIN 8) as an output pin for the LED through the Data Direction Register DDRB
@@ -80,6 +80,7 @@ sei();
 ```
 		 
 Upon return to the main function, it enters an infinite while loop that Toggles the state of PIN B7 upon checking if button_press variable is false.
+Declarations: 
 ```cpp
 volatile uint8_t button_press = 0;
 volatile uint8_t debounce;	
@@ -111,10 +112,9 @@ ISR(INT0_vect)
         if(debounce == 0)
         {
             button_press = !button_press;
-            // Setup Interrupt Service Routine for INT0
             if(button_press)
             {
-                PORTB |= (1<<PB7); // toggles PIN7 and latches the state 
+                PORTB |= (1<<PB7); // set PIN7 to high 
             }
             else PORTB &= ~(1<<PB7);
         }
@@ -125,10 +125,9 @@ ISR(INT0_vect)
         if(debounce == 0b00000100)
         {
             button_press = !button_press;
-            // Setup Interrupt Service Routine for INT0
             if(button_press)
             {
-                PORTB |= (1<<PB7); // toggles PIN7 and latches the state 
+                PORTB |= (1<<PB7); // set PIN7 to high 
             }
             else PORTB &= ~(1<<PB7);
         }
@@ -139,10 +138,9 @@ ISR(INT0_vect)
 In the ISR function when a button is pressed it toggles the state of button_press i.e from low to high 0 to 1.
 ```cpp
 button_press = !button_press;
-// Setup Interrupt Service Routine for INT0
 if(button_press)
 {
-    PORTB |= (1<<PB7); // toggles PIN7 and latches the state 
+    PORTB |= (1<<PB7); // set PIN7 to high 
 }
 else PORTB &= ~(1<<PB7); 
 ```

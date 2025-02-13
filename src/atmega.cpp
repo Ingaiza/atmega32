@@ -41,7 +41,7 @@ ISR(INT0_vect)
             button_press = !button_press;
             if(button_press)
             {
-                PORTB |= (1<<PB7); // toggles PIN7 and latches the state 
+                PORTB |= (1<<PB7); // set PIN7 to high 
             }
             else PORTB &= ~(1<<PB7);
         }
