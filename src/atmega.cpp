@@ -6,6 +6,7 @@
 #define F_CPU 800000000UL
 #endif
 
+volatile uint8_t button_press = 0;
 
 void interrupt_init()
 {
@@ -19,6 +20,20 @@ void interrupt_init()
     MCUCR = 0x01;
     // enable interrupts
     sei();
+
+}
+
+
+ISR(INT0_vect)
+{
+    button_press = !button_press;
+
+    // Setup Interrupt Service Routine for INT0
+    if(button_press)
+    {
+        PORTB |= (1<<PB7); // toggles PIN7 and latches the state 
+    }
+    else PORTB &= ~(1<<PB7);
 
 }
 
