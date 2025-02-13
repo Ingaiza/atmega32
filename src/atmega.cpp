@@ -39,7 +39,6 @@ ISR(INT0_vect)
         if(debounce == 0)
         {
             button_press = !button_press;
-            // Setup Interrupt Service Routine for INT0
             if(button_press)
             {
                 PORTB |= (1<<PB7); // toggles PIN7 and latches the state 
@@ -53,10 +52,9 @@ ISR(INT0_vect)
         if(debounce == 0b00000100)
         {
             button_press = !button_press;
-            // Setup Interrupt Service Routine for INT0
             if(button_press)
             {
-                PORTB |= (1<<PB7); // toggles PIN7 and latches the state 
+                PORTB |= (1<<PB7); // set PIN7 to high 
             }
             else PORTB &= ~(1<<PB7);
         }
