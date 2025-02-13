@@ -3,10 +3,11 @@
 #include <avr/interrupt.h>
 
 #ifndef F_CPU
-#define F_CPU 800000000UL
+#define F_CPU 8000000UL
 #endif
 
 volatile uint8_t button_press = 0;
+volatile uint8_t debounce;
 
 void interrupt_init()
 {
@@ -26,14 +27,40 @@ void interrupt_init()
 
 ISR(INT0_vect)
 {
-    button_press = !button_press;
+    _delay_ms(20); // debounce delay
+    // read status of PORT D 
+    debounce = PIND;
+    // Mask status of PD2
+    debounce &= 0b00000100;
 
-    // Setup Interrupt Service Routine for INT0
-    if(button_press)
+    // Verify PD2 status by comparing it to expected status according to ISR(last state)
+    if(!button_press)
     {
-        PORTB |= (1<<PB7); // toggles PIN7 and latches the state 
+        if(debounce == 0)
+        {
+            button_press = !button_press;
+            // Setup Interrupt Service Routine for INT0
+            if(button_press)
+            {
+                PORTB |= (1<<PB7); // toggles PIN7 and latches the state 
+            }
+            else PORTB &= ~(1<<PB7);
+        }
+       
     }
-    else PORTB &= ~(1<<PB7);
+    else
+    {
+        if(debounce == 0b00000100)
+        {
+            button_press = !button_press;
+            // Setup Interrupt Service Routine for INT0
+            if(button_press)
+            {
+                PORTB |= (1<<PB7); // toggles PIN7 and latches the state 
+            }
+            else PORTB &= ~(1<<PB7);
+        }
+    }
 
 }
 
